@@ -21,7 +21,8 @@ defmodule GiphyScraper.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:jason, "~> 1.2"}
     ]
   end
 end
