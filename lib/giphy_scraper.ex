@@ -1,29 +1,11 @@
 defmodule GiphyScraper do
-  # @spec search(any) :: %{
-  #         :__struct__ => HTTPoison.AsyncResponse | HTTPoison.Response,
-  #         optional(:body) => any,
-  #         optional(:headers) => list,
-  #         optional(:id) => reference,
-  #         optional(:request) => HTTPoison.Request.t(),
-  #         optional(:request_url) => any,
-  #         optional(:status_code) => integer
-  #       }
-  # [
-  #   %GiphyImage{
-  #     id: "some_id",
-  #     url: "url_to_gif",
-  #     username: "username of creator",
-  #     title: "SomeGif"
-  #   },
+  def search() do
+    http_get_request_from_giphy()
+    |> decode_json_and_return_data_as_map
+    |> convert_list_of_maps_to_giphy_image_structs
+  end
 
-  #   %GiphyImage{
-  #     id: "some_other_id",
-  #     url: "url_to_gif_2",
-  #     username: "username of creator",
-  #     title: "MyGif"
-  #   }
-  # ]
-  def search(query) do
+  defp http_get_request_from_giphy() do
     # 1. Pass Params to HHTPoison (avoid building string)
     # 2. How pass API Key securely
     results =
@@ -31,10 +13,14 @@ defmodule GiphyScraper do
         "https://api.giphy.com/v1/gifs/search?api_key=ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB&q=cats&limit=25&offset=0&rating=g&lang=en"
       )
 
-    body_json = results.body
-    body = Jason.decode!(body_json)
-    data = body["data"]
+    results.body
+  end
 
+  defp decode_json_and_return_data_as_map(json) do
+    Jason.decode!(json)["data"]
+  end
+
+  defp convert_list_of_maps_to_giphy_image_structs(data) do
     Enum.map(data, fn single_result ->
       %GiphyImage{
         id: single_result["id"],
@@ -43,10 +29,5 @@ defmodule GiphyScraper do
         title: single_result["title"]
       }
     end)
-
-    # query
-    # |> get_results_from_giphy
-    # |> serialize_results_to_list_of_structs
-    # iex(10)> g = %GiphyImage{id: 42, url: "foo.com", username: "amazing", title: "title"}
   end
 end
