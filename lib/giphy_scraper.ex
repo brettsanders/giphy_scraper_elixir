@@ -1,18 +1,11 @@
 defmodule GiphyScraper do
-  @moduledoc """
-  Documentation for GiphyScraper.
-  """
+  def search(query) do
+    HTTPoison.get!(
+      "https://api.giphy.com/v1/gifs/search?api_key=ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB&q=cats&limit=25&offset=0&rating=g&lang=en"
+    )
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> GiphyScraper.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    # query
+    # |> get_results_from_giphy
+    # |> serialize_results_to_list_of_structs
   end
 end
