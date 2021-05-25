@@ -1,22 +1,30 @@
 defmodule GiphyScraper do
-  def search() do
-    http_get_request_from_giphy()
+  def search(query_string) do
+    http_get_request_from_giphy(query_string)
     |> decode_json_and_return_data_as_map
     |> convert_list_of_maps_to_giphy_image_structs
   end
 
-  # HTTPoison.get!("http://httparrot.herokuapp.com/get", [], params: %{key: "value"}
-  # "https://api.giphy.com/v1/gifs/search?api_key=ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB&q=cats&limit=25&offset=0&rating=g&lang=en"
-  # HTTPoison.get!("http://httparrot.herokuapp.com/get", [], params: %{api_key: "ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB", q: "cats", limit: "25", offset: "0", rating: "g"}
-  defp http_get_request_from_giphy() do
-    # 1. Pass Params to HHTPoison (avoid building string)
-    # 2. How pass API Key securely
-    results =
-      HTTPoison.get!(
-        "https://api.giphy.com/v1/gifs/search?api_key=ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB&q=cats&limit=25&offset=0&rating=g&lang=en"
+  defp http_get_request_from_giphy(query_string) do
+    options = [
+      params: [
+        api_key: "ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB",
+        q: query_string,
+        limit: 25,
+        offset: 0
+      ]
+    ]
+
+    {:ok, %HTTPoison.Response{body: b}} =
+      HTTPoison.request(
+        :get,
+        "https://api.giphy.com/v1/gifs/search",
+        [],
+        [],
+        options
       )
 
-    results.body
+    b
   end
 
   defp decode_json_and_return_data_as_map(json) do
