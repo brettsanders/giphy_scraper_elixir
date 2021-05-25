@@ -1,4 +1,5 @@
 defmodule GiphyScraper do
+  @spec search(any) :: list
   def search(query_string \\ "programmer") do
     http_get_request_from_giphy(query_string)
     |> decode_json_and_return_data_as_map
@@ -8,7 +9,7 @@ defmodule GiphyScraper do
   defp http_get_request_from_giphy(query_string) do
     options = [
       params: [
-        api_key: "ovHtiqdJ5RuVcQBIpYfA1sMU7mCGwSxB",
+        api_key: Application.fetch_env!(:giphy_scraper, :giphy_api_key),
         q: query_string,
         limit: 25,
         offset: 0
