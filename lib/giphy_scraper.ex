@@ -1,5 +1,5 @@
 defmodule GiphyScraper do
-  def search(query_string) do
+  def search(query_string \\ "programmer") do
     http_get_request_from_giphy(query_string)
     |> decode_json_and_return_data_as_map
     |> convert_list_of_maps_to_giphy_image_structs
